@@ -1,0 +1,774 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6164B0FE2E698FD900106D16 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6164B0FD2E698FD900106D16 /* StoreKit.framework */; };
+		61F1E6E42E655E0D0090C03D /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 61F1E6E32E655E0D0090C03D /* FirebaseAnalytics */; };
+		61F1E6E62E655E0D0090C03D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 61F1E6E52E655E0D0090C03D /* FirebaseAuth */; };
+		61F1E6E82E655E0D0090C03D /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 61F1E6E72E655E0D0090C03D /* FirebaseCore */; };
+		61F1E6EA2E655E0D0090C03D /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 61F1E6E92E655E0D0090C03D /* FirebaseCrashlytics */; };
+		61F1E6EC2E655E0D0090C03D /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 61F1E6EB2E655E0D0090C03D /* FirebaseFirestore */; };
+		61F1E6EE2E655E0D0090C03D /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = 61F1E6ED2E655E0D0090C03D /* FirebaseFunctions */; };
+		61F1E6F02E655E0D0090C03D /* FirebaseInAppMessaging-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 61F1E6EF2E655E0D0090C03D /* FirebaseInAppMessaging-Beta */; };
+		61F1E6F22E655E0D0090C03D /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 61F1E6F12E655E0D0090C03D /* FirebaseRemoteConfig */; };
+		61F1E6F42E655E0D0090C03D /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 61F1E6F32E655E0D0090C03D /* FirebaseStorage */; };
+		61F1E73C2E65662F0090C03D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 61F1E73B2E65662F0090C03D /* GoogleService-Info.plist */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		61F1E6AA2E65591E0090C03D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 61F1E6902E65591D0090C03D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 61F1E6972E65591D0090C03D;
+			remoteInfo = lannaapp;
+		};
+		61F1E6B42E65591E0090C03D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 61F1E6902E65591D0090C03D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 61F1E6972E65591D0090C03D;
+			remoteInfo = lannaapp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		6164B0FD2E698FD900106D16 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		61CA988D2E81C09F005559EF /* QCSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = QCSDK.framework; sourceTree = "<group>"; };
+		61F1E6982E65591D0090C03D /* lannaapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lannaapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		61F1E6A92E65591E0090C03D /* lannaappTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = lannaappTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		61F1E6B32E65591E0090C03D /* lannaappUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = lannaappUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		61F1E73B2E65662F0090C03D /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		61BCB2752E8C518D008F05DB /* Exceptions for "lannaapp" folder in "lannaapp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 61F1E6972E65591D0090C03D /* lannaapp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		61F1E69A2E65591D0090C03D /* lannaapp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				61BCB2752E8C518D008F05DB /* Exceptions for "lannaapp" folder in "lannaapp" target */,
+			);
+			path = lannaapp;
+			sourceTree = "<group>";
+		};
+		61F1E6AC2E65591E0090C03D /* lannaappTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = lannaappTests;
+			sourceTree = "<group>";
+		};
+		61F1E6B62E65591E0090C03D /* lannaappUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = lannaappUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		61F1E6952E65591D0090C03D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				61F1E6E42E655E0D0090C03D /* FirebaseAnalytics in Frameworks */,
+				61F1E6F02E655E0D0090C03D /* FirebaseInAppMessaging-Beta in Frameworks */,
+				61F1E6F42E655E0D0090C03D /* FirebaseStorage in Frameworks */,
+				61F1E6EA2E655E0D0090C03D /* FirebaseCrashlytics in Frameworks */,
+				61F1E6E82E655E0D0090C03D /* FirebaseCore in Frameworks */,
+				61F1E6EE2E655E0D0090C03D /* FirebaseFunctions in Frameworks */,
+				61F1E6EC2E655E0D0090C03D /* FirebaseFirestore in Frameworks */,
+				6164B0FE2E698FD900106D16 /* StoreKit.framework in Frameworks */,
+				61F1E6E62E655E0D0090C03D /* FirebaseAuth in Frameworks */,
+				61F1E6F22E655E0D0090C03D /* FirebaseRemoteConfig in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61F1E6A62E65591E0090C03D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61F1E6B02E65591E0090C03D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6164B0FC2E698FD900106D16 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6164B0FD2E698FD900106D16 /* StoreKit.framework */,
+				61CA988D2E81C09F005559EF /* QCSDK.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		61F1E68F2E65591D0090C03D = {
+			isa = PBXGroup;
+			children = (
+				61F1E69A2E65591D0090C03D /* lannaapp */,
+				61F1E6AC2E65591E0090C03D /* lannaappTests */,
+				61F1E6B62E65591E0090C03D /* lannaappUITests */,
+				61F1E6992E65591D0090C03D /* Products */,
+				61F1E73B2E65662F0090C03D /* GoogleService-Info.plist */,
+				6164B0FC2E698FD900106D16 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		61F1E6992E65591D0090C03D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				61F1E6982E65591D0090C03D /* lannaapp.app */,
+				61F1E6A92E65591E0090C03D /* lannaappTests.xctest */,
+				61F1E6B32E65591E0090C03D /* lannaappUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		61F1E6972E65591D0090C03D /* lannaapp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 61F1E6BD2E65591E0090C03D /* Build configuration list for PBXNativeTarget "lannaapp" */;
+			buildPhases = (
+				61F1E6942E65591D0090C03D /* Sources */,
+				61F1E6952E65591D0090C03D /* Frameworks */,
+				61F1E6962E65591D0090C03D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				61F1E69A2E65591D0090C03D /* lannaapp */,
+			);
+			name = lannaapp;
+			packageProductDependencies = (
+				61F1E6E32E655E0D0090C03D /* FirebaseAnalytics */,
+				61F1E6E52E655E0D0090C03D /* FirebaseAuth */,
+				61F1E6E72E655E0D0090C03D /* FirebaseCore */,
+				61F1E6E92E655E0D0090C03D /* FirebaseCrashlytics */,
+				61F1E6EB2E655E0D0090C03D /* FirebaseFirestore */,
+				61F1E6ED2E655E0D0090C03D /* FirebaseFunctions */,
+				61F1E6EF2E655E0D0090C03D /* FirebaseInAppMessaging-Beta */,
+				61F1E6F12E655E0D0090C03D /* FirebaseRemoteConfig */,
+				61F1E6F32E655E0D0090C03D /* FirebaseStorage */,
+			);
+			productName = lannaapp;
+			productReference = 61F1E6982E65591D0090C03D /* lannaapp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		61F1E6A82E65591E0090C03D /* lannaappTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 61F1E6C02E65591E0090C03D /* Build configuration list for PBXNativeTarget "lannaappTests" */;
+			buildPhases = (
+				61F1E6A52E65591E0090C03D /* Sources */,
+				61F1E6A62E65591E0090C03D /* Frameworks */,
+				61F1E6A72E65591E0090C03D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				61F1E6AB2E65591E0090C03D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				61F1E6AC2E65591E0090C03D /* lannaappTests */,
+			);
+			name = lannaappTests;
+			packageProductDependencies = (
+			);
+			productName = lannaappTests;
+			productReference = 61F1E6A92E65591E0090C03D /* lannaappTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		61F1E6B22E65591E0090C03D /* lannaappUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 61F1E6C32E65591E0090C03D /* Build configuration list for PBXNativeTarget "lannaappUITests" */;
+			buildPhases = (
+				61F1E6AF2E65591E0090C03D /* Sources */,
+				61F1E6B02E65591E0090C03D /* Frameworks */,
+				61F1E6B12E65591E0090C03D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				61F1E6B52E65591E0090C03D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				61F1E6B62E65591E0090C03D /* lannaappUITests */,
+			);
+			name = lannaappUITests;
+			packageProductDependencies = (
+			);
+			productName = lannaappUITests;
+			productReference = 61F1E6B32E65591E0090C03D /* lannaappUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		61F1E6902E65591D0090C03D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1610;
+				LastUpgradeCheck = 1610;
+				TargetAttributes = {
+					61F1E6972E65591D0090C03D = {
+						CreatedOnToolsVersion = 16.1;
+					};
+					61F1E6A82E65591E0090C03D = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = 61F1E6972E65591D0090C03D;
+					};
+					61F1E6B22E65591E0090C03D = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = 61F1E6972E65591D0090C03D;
+					};
+				};
+			};
+			buildConfigurationList = 61F1E6932E65591D0090C03D /* Build configuration list for PBXProject "lannaapp" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 61F1E68F2E65591D0090C03D;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				61F1E6E22E655E0D0090C03D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				61BCB26D2E8BB1C2008F05DB /* XCRemoteSwiftPackageReference "swift-realtime-openai" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 61F1E6992E65591D0090C03D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				61F1E6972E65591D0090C03D /* lannaapp */,
+				61F1E6A82E65591E0090C03D /* lannaappTests */,
+				61F1E6B22E65591E0090C03D /* lannaappUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		61F1E6962E65591D0090C03D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				61F1E73C2E65662F0090C03D /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61F1E6A72E65591E0090C03D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61F1E6B12E65591E0090C03D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		61F1E6942E65591D0090C03D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61F1E6A52E65591E0090C03D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61F1E6AF2E65591E0090C03D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		61F1E6AB2E65591E0090C03D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 61F1E6972E65591D0090C03D /* lannaapp */;
+			targetProxy = 61F1E6AA2E65591E0090C03D /* PBXContainerItemProxy */;
+		};
+		61F1E6B52E65591E0090C03D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 61F1E6972E65591D0090C03D /* lannaapp */;
+			targetProxy = 61F1E6B42E65591E0090C03D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		61F1E6BB2E65591E0090C03D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		61F1E6BC2E65591E0090C03D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		61F1E6BE2E65591E0090C03D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = lannaapp/lannaapp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"lannaapp/Preview Content\"";
+				DEVELOPMENT_TEAM = 4FY35AJR69;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/lannaapp",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = lannaapp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Spekt ";
+				INFOPLIST_KEY_NSAppTransportSecurity = "\n<dict>\n\t<key>NSAllowsLocalNetworking</key>\n\t<true/>\n\t<key>NSExceptionDomains</key>\n\t<dict>\n\t\t<key>192.168.31.1</key>\n\t\t<dict>\n\t\t\t<key>NSExceptionAllowsInsecureHTTPLoads</key>\n\t\t\t<true/>\n\t\t</dict>\n\t\t<key>3.192.168.31</key>\n\t\t<dict>\n\t\t\t<key>NSExceptionAllowsInsecureHTTPLoads</key>\n\t\t\t<true/>\n\t\t</dict>\n\t</dict>\n</dict>";
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Lanna needs Bluetooth to connect to your smart glasses and receive notifications when you take photos.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Lanna needs camera access for video features.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Lanna needs local network access to transfer photos and videos from your smart glasses over WiFi.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Lanna uses your location to provide context-aware AI responses, even during background voice chats.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Lanna uses your location to provide context-aware AI responses during voice chats.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Lanna needs microphone access for voice commands and realtime chat.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Lanna uses speech recognition to enable voice commands and transcription features with your smart glasses.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				MARKETING_VERSION = 1.2;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kareemdasilva.arthuraiapp;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.schotzenterprise.lanna;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "lannaapp/lannaapp-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				XROS_DEPLOYMENT_TARGET = 2.1;
+			};
+			name = Debug;
+		};
+		61F1E6BF2E65591E0090C03D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = lannaapp/lannaapp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"lannaapp/Preview Content\"";
+				DEVELOPMENT_TEAM = 4FY35AJR69;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/lannaapp",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = lannaapp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Spekt ";
+				INFOPLIST_KEY_NSAppTransportSecurity = "\n<dict>\n\t<key>NSAllowsLocalNetworking</key>\n\t<true/>\n\t<key>NSExceptionDomains</key>\n\t<dict>\n\t\t<key>192.168.31.1</key>\n\t\t<dict>\n\t\t\t<key>NSExceptionAllowsInsecureHTTPLoads</key>\n\t\t\t<true/>\n\t\t</dict>\n\t\t<key>3.192.168.31</key>\n\t\t<dict>\n\t\t\t<key>NSExceptionAllowsInsecureHTTPLoads</key>\n\t\t\t<true/>\n\t\t</dict>\n\t</dict>\n</dict>";
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Lanna needs Bluetooth to connect to your smart glasses and receive notifications when you take photos.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Lanna needs camera access for video features.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Lanna needs local network access to transfer photos and videos from your smart glasses over WiFi.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Lanna uses your location to provide context-aware AI responses, even during background voice chats.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Lanna uses your location to provide context-aware AI responses during voice chats.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Lanna needs microphone access for voice commands and realtime chat.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Lanna uses speech recognition to enable voice commands and transcription features with your smart glasses.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				MARKETING_VERSION = 1.2;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kareemdasilva.arthuraiapp;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.schotzenterprise.lanna;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "lannaapp/lannaapp-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				XROS_DEPLOYMENT_TARGET = 2.1;
+			};
+			name = Release;
+		};
+		61F1E6C12E65591E0090C03D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7TG85KVRKK;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSAppTransportSecurity = "\n<dict>\n\t<key>NSAllowsLocalNetworking</key>\n\t<true/>\n\t<key>NSExceptionDomains</key>\n\t<dict>\n\t\t<key>192.168.31.1</key>\n\t\t<dict>\n\t\t\t<key>NSExceptionAllowsInsecureHTTPLoads</key>\n\t\t\t<true/>\n\t\t</dict>\n\t\t<key>3.192.168.31</key>\n\t\t<dict>\n\t\t\t<key>NSExceptionAllowsInsecureHTTPLoads</key>\n\t\t\t<true/>\n\t\t</dict>\n\t</dict>\n</dict>";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.art.lannaappTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/lannaapp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/lannaapp";
+				XROS_DEPLOYMENT_TARGET = 2.1;
+			};
+			name = Debug;
+		};
+		61F1E6C22E65591E0090C03D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7TG85KVRKK;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSAppTransportSecurity = "\n<dict>\n\t<key>NSAllowsLocalNetworking</key>\n\t<true/>\n\t<key>NSExceptionDomains</key>\n\t<dict>\n\t\t<key>192.168.31.1</key>\n\t\t<dict>\n\t\t\t<key>NSExceptionAllowsInsecureHTTPLoads</key>\n\t\t\t<true/>\n\t\t</dict>\n\t\t<key>3.192.168.31</key>\n\t\t<dict>\n\t\t\t<key>NSExceptionAllowsInsecureHTTPLoads</key>\n\t\t\t<true/>\n\t\t</dict>\n\t</dict>\n</dict>";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.art.lannaappTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/lannaapp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/lannaapp";
+				XROS_DEPLOYMENT_TARGET = 2.1;
+			};
+			name = Release;
+		};
+		61F1E6C42E65591E0090C03D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7TG85KVRKK;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSAppTransportSecurity = "\n<dict>\n\t<key>NSAllowsLocalNetworking</key>\n\t<true/>\n\t<key>NSExceptionDomains</key>\n\t<dict>\n\t\t<key>192.168.31.1</key>\n\t\t<dict>\n\t\t\t<key>NSExceptionAllowsInsecureHTTPLoads</key>\n\t\t\t<true/>\n\t\t</dict>\n\t\t<key>3.192.168.31</key>\n\t\t<dict>\n\t\t\t<key>NSExceptionAllowsInsecureHTTPLoads</key>\n\t\t\t<true/>\n\t\t</dict>\n\t</dict>\n</dict>";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.art.lannaappUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_TARGET_NAME = lannaapp;
+				XROS_DEPLOYMENT_TARGET = 2.1;
+			};
+			name = Debug;
+		};
+		61F1E6C52E65591E0090C03D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7TG85KVRKK;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSAppTransportSecurity = "\n<dict>\n\t<key>NSAllowsLocalNetworking</key>\n\t<true/>\n\t<key>NSExceptionDomains</key>\n\t<dict>\n\t\t<key>192.168.31.1</key>\n\t\t<dict>\n\t\t\t<key>NSExceptionAllowsInsecureHTTPLoads</key>\n\t\t\t<true/>\n\t\t</dict>\n\t\t<key>3.192.168.31</key>\n\t\t<dict>\n\t\t\t<key>NSExceptionAllowsInsecureHTTPLoads</key>\n\t\t\t<true/>\n\t\t</dict>\n\t</dict>\n</dict>";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.art.lannaappUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_TARGET_NAME = lannaapp;
+				XROS_DEPLOYMENT_TARGET = 2.1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		61F1E6932E65591D0090C03D /* Build configuration list for PBXProject "lannaapp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61F1E6BB2E65591E0090C03D /* Debug */,
+				61F1E6BC2E65591E0090C03D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		61F1E6BD2E65591E0090C03D /* Build configuration list for PBXNativeTarget "lannaapp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61F1E6BE2E65591E0090C03D /* Debug */,
+				61F1E6BF2E65591E0090C03D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		61F1E6C02E65591E0090C03D /* Build configuration list for PBXNativeTarget "lannaappTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61F1E6C12E65591E0090C03D /* Debug */,
+				61F1E6C22E65591E0090C03D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		61F1E6C32E65591E0090C03D /* Build configuration list for PBXNativeTarget "lannaappUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61F1E6C42E65591E0090C03D /* Debug */,
+				61F1E6C52E65591E0090C03D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		61BCB26D2E8BB1C2008F05DB /* XCRemoteSwiftPackageReference "swift-realtime-openai" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/m1guelpf/swift-realtime-openai.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		61F1E6E22E655E0D0090C03D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		61F1E6E32E655E0D0090C03D /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 61F1E6E22E655E0D0090C03D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		61F1E6E52E655E0D0090C03D /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 61F1E6E22E655E0D0090C03D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		61F1E6E72E655E0D0090C03D /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 61F1E6E22E655E0D0090C03D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		61F1E6E92E655E0D0090C03D /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 61F1E6E22E655E0D0090C03D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+		61F1E6EB2E655E0D0090C03D /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 61F1E6E22E655E0D0090C03D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		61F1E6ED2E655E0D0090C03D /* FirebaseFunctions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 61F1E6E22E655E0D0090C03D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFunctions;
+		};
+		61F1E6EF2E655E0D0090C03D /* FirebaseInAppMessaging-Beta */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 61F1E6E22E655E0D0090C03D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseInAppMessaging-Beta";
+		};
+		61F1E6F12E655E0D0090C03D /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 61F1E6E22E655E0D0090C03D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
+		};
+		61F1E6F32E655E0D0090C03D /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 61F1E6E22E655E0D0090C03D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 61F1E6902E65591D0090C03D /* Project object */;
+}

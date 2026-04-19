@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
+		<string>remote-notification</string>
+		<string>audio</string>
+	</array>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>SPEKT AI uses Calendar to schedule meetings, manage your events, and help plan your week.</string>
+	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+	<string>SPEKT AI uses Calendar to create events on your behalf.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>SPEKT AI uses Contacts to look up people you mention and personalise responses.</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>SPEKT AI uses Reminders to create tasks and follow up on action items from your calls.</string>
+</dict>
+</plist>

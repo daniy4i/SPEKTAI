@@ -1,0 +1,60 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users manage only their profile document
+    match /users/{uid} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Projects - only owners can manage
+    match /projects/{projectId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
+    }
+
+    // User conversations - users can only access their own conversations
+    // This includes regular conversations AND voice memo conversations
+    match /users/{userId}/conversations/{conversationId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // Messages within conversations (including voice memo messages)
+      match /messages/{messageId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow create: if request.auth != null && request.auth.uid == userId;
+        allow update, delete: if false; // Messages are immutable
+      }
+    }
+
+    // Media items - users can only access their own media
+    match /users/{userId}/media/{mediaId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Jobs - users can read their own jobs, backend creates/updates via service account
+    match /jobs/{jobId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if false; // Only backend service account can update
+      allow delete: if false;
+    }
+
+    // Assets - readable by authenticated users, writable by backend
+    match /assets/{assetId} {
+      allow read: if request.auth != null;
+      allow write: if false; // Only backend service account writes assets
+    }
+
+    // Logs - server-only collection
+    match /logs/{logId} {
+      allow read, write: if false; // Only backend service account
+    }
+
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

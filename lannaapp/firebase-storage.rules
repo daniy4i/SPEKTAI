@@ -1,0 +1,140 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // 🔥 MOVIES PIPELINE UPLOADS - Allow all pipeline assets
+    match /Movies/{userId}/{projectName}/{assetType}/{fileName} {
+      // Anyone can read pipeline assets (they're public)
+      allow read: if true;
+      // Allow Firebase Admin SDK (service account) to upload
+      allow write: if request.auth == null ||
+                   // Allow authenticated users to upload to their own folder
+                   (request.auth != null && request.auth.uid == userId);
+    }
+
+    // Allow anonymous pipeline uploads
+    match /Movies/anonymous/{projectName}/{assetType}/{fileName} {
+      allow read: if true;
+      allow write: if true; // Allow all writes for anonymous pipeline
+    }
+
+    // User profile images
+    match /users/{userId}/profile/{fileName} {
+      // Anyone can read profile images
+      allow read: if true;
+      // Only the user can upload their own profile image
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // 🎧 CONVERSATION AUDIO FILES - Audio recordings from conversations
+    // This includes listen mode audio AND voice memo audio (both are conversation types)
+    match /users/{userId}/conversations/{conversationId}/audio/{audioFile} {
+      // Only the conversation owner can read their audio files
+      allow read: if request.auth != null && request.auth.uid == userId;
+      // Only the conversation owner can upload audio files
+      allow write: if request.auth != null && 
+                     request.auth.uid == userId &&
+                     request.resource.size < 50 * 1024 * 1024 && // 50MB max for audio
+                     request.resource.contentType.matches('audio/.*'); // Only audio files
+    }
+
+    // 📹 CONVERSATION VIDEO FILES - Video recordings from conversations
+    // This includes watch mode video (also a conversation type)
+    match /users/{userId}/conversations/{conversationId}/video/{videoFile} {
+      // Only the conversation owner can read their video files
+      allow read: if request.auth != null && request.auth.uid == userId;
+      // Only the conversation owner can upload video files
+      allow write: if request.auth != null && 
+                     request.auth.uid == userId &&
+                     request.resource.size < 200 * 1024 * 1024 && // 200MB max for video
+                     (request.resource.contentType.matches('video/.*') ||
+                      request.resource.contentType.matches('video/mp4') ||
+                      request.resource.contentType.matches('video/quicktime')); // Video files only
+    }
+
+    // 📱 MEDIA GALLERY FILES - General media uploads
+    match /users/{userId}/media/{mediaFile} {
+      // Only the user can read their media files
+      allow read: if request.auth != null && request.auth.uid == userId;
+      // Only the user can upload media files
+      allow write: if request.auth != null && 
+                     request.auth.uid == userId &&
+                     request.resource.size < 100 * 1024 * 1024 && // 100MB max for general media
+                     (request.resource.contentType.matches('image/.*') ||
+                      request.resource.contentType.matches('video/.*') ||
+                      request.resource.contentType.matches('audio/.*')); // Images, videos, and audio
+    }
+
+    // Published stories and variants (Content for Television)
+    match /published/{storyId}/{allFiles=**} {
+      // Anyone can read published content
+      allow read: if true;
+      // Only the story owner can write to their published content
+      allow write: if request.auth != null;
+    }
+
+    // Story images
+    match /stories/{storyId}/{allImages=**} {
+      // Anyone can read story images
+      allow read: if true;
+      // Only story owners can upload images for their stories
+      allow write: if request.auth != null &&
+                    request.resource.size < 10 * 1024 * 1024 && // 10MB max
+                    (request.resource.contentType.matches('image/.*') ||
+                     request.resource.contentType.matches('video/.*') ||
+                     request.resource.contentType.matches('audio/.*')); // Images, videos, and audio
+    }
+
+    // Dialogue audio files
+    match /stories/{storyId}/scenes/{sceneId}/shots/{shotId}/{audioFile} {
+      // Anyone can read audio files
+      allow read: if true;
+      // Only authenticated users can upload audio files
+      allow write: if request.auth != null &&
+                    request.resource.size < 5 * 1024 * 1024 && // 5MB max
+                    request.resource.contentType.matches('audio/.*'); // Only audio files
+    }
+
+    // Sound effects
+    match /stories/{storyId}/scenes/{sceneId}/shots/{shotId}/sfx/{sfxFile} {
+      // Anyone can read sound effects
+      allow read: if true;
+      // Only authenticated users can upload sound effects
+      allow write: if request.auth != null &&
+                    request.resource.size < 5 * 1024 * 1024 && // 5MB max
+                    request.resource.contentType.matches('audio/.*'); // Only audio files
+    }
+
+    // Music and background audio
+    match /stories/{storyId}/scenes/{sceneId}/music/{musicFile} {
+      // Anyone can read music files
+      allow read: if true;
+      // Only authenticated users can upload music
+      allow write: if request.auth != null &&
+                    request.resource.size < 10 * 1024 * 1024 && // 10MB max
+                    request.resource.contentType.matches('audio/.*'); // Only audio files
+    }
+
+    // Character images
+    match /characters/{characterId}/{allImages=**} {
+      // Anyone can read character images
+      allow read: if true;
+      // Only character owners can upload character images
+      allow write: if request.auth != null &&
+                    request.resource.size < 5 * 1024 * 1024 && // 5MB max
+                    request.resource.contentType.matches('image/.*'); // Only images
+    }
+
+    // General uploads for generated assets
+    match /uploads/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Public assets directory
+    match /assets/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}

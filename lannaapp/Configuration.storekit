@@ -1,0 +1,147 @@
+{
+  "identifier" : "arthur_ai_configuration",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "com.kareemdasilva.arthuraiapp",
+    "_developerTeamID" : "4FY35AJR69",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 738864000.0,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" => "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "arthur_subscriptions",
+      "localizations" : [
+        {
+          "description" : "Arthur AI subscription plans",
+          "displayName" : "Arthur AI Subscriptions",
+          "locale" : "en_US"
+        }
+      ],
+      "name" : "Arthur AI Subscriptions",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "arthuraiplus",
+          "introductoryOffer" : {
+            "internalID" : "arthuraiplus_intro",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P3D"
+          },
+          "localizations" : [
+            {
+              "description" : "Arthur AI Plus subscription with advanced features",
+              "displayName" : "Arthur AI Plus",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "arthuraiplus",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Arthur AI Plus",
+          "subscriptionGroupID" : "arthur_subscriptions",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "arthur_pro_monthly",
+          "introductoryOffer" : {
+            "internalID" : "arthur_pro_intro",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P3D"
+          },
+          "localizations" : [
+            {
+              "description" : "Arthur AI Pro subscription with premium features",
+              "displayName" : "Arthur AI Pro",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "arthur_pro_monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Arthur AI Pro",
+          "subscriptionGroupID" : "arthur_subscriptions",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
+
+
+
+
