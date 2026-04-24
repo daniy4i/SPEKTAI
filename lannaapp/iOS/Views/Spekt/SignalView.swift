@@ -706,14 +706,35 @@ private struct MemoryListContent: View {
     let accentColor: Color
     @ObservedObject var vm: SignalViewModel
 
-    @State private var editingMemory: SpektMemory? = nil
-    @State private var editText     : String       = ""
+    @State private var editingMemory  : SpektMemory? = nil
+    @State private var editText       : String       = ""
+    @State private var searchText     : String       = ""
+    @State private var isSelecting    : Bool         = false
+    @State private var selectedIDs    : Set<String>  = []
+
+    // MARK: Filtered / sectioned
+
+    private var filtered: [SpektMemory] {
+        guard !searchText.isEmpty else { return vm.memories }
+        return vm.memories.filter { $0.content.localizedCaseInsensitiveContains(searchText) }
+    }
+    private var pinned : [SpektMemory] { filtered.filter(\.isPinned) }
+    private var regular: [SpektMemory] { filtered.filter { !$0.isPinned } }
+
+    // MARK: Body
 
     var body: some View {
         VStack(spacing: 0) {
 
             // ── Memory count hero ────────────────────────────────────────
             MemoryCountHero(count: vm.memoriesCount, accentColor: accentColor)
+
+            // ── Search bar (only when there's something to search) ───────
+            if vm.memories.count > 2 {
+                searchBar
+                    .padding(.horizontal, SpektTheme.Spacing.md)
+                    .padding(.bottom, SpektTheme.Spacing.sm)
+            }
 
             GlassDivider(opacity: 0.06)
                 .padding(.horizontal, SpektTheme.Spacing.md)
@@ -745,6 +766,36 @@ private struct MemoryListContent: View {
                 .presentationCornerRadius(SpektTheme.Radius.xl)
         }
     }
+
+    // MARK: Search Bar
+
+    private var searchBar: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 12))
+                .foregroundColor(SpektTheme.Colors.textTertiary)
+            TextField("Search memories", text: $searchText)
+                .font(SpektTheme.Typography.bodySmall)
+                .foregroundColor(SpektTheme.Colors.textPrimary)
+                .autocorrectionDisabled()
+            if !searchText.isEmpty {
+                Button { searchText = "" } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 13))
+                        .foregroundColor(SpektTheme.Colors.textTertiary.opacity(0.70))
+                }
+                .buttonStyle(PressableButtonStyle(scale: 0.90))
+                .transition(.scale.combined(with: .opacity))
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .background(Color.white.opacity(0.06))
+        .cornerRadius(SpektTheme.Radius.sm)
+        .animation(SpektTheme.Motion.springSnappy, value: searchText.isEmpty)
+    }
+
+    // MARK: Placeholders
 
     private var loadingPlaceholder: some View {
         HStack {
@@ -812,29 +863,111 @@ private struct MemoryListContent: View {
         .padding(.horizontal, SpektTheme.Spacing.md)
     }
 
+    // MARK: Memory List (sectioned)
+
     private var memoryList: some View {
         VStack(spacing: 0) {
-            ForEach(Array(vm.memories.enumerated()), id: \.element.id) { i, memory in
-                MemoryRow(
-                    memory     : memory,
-                    accentColor: accentColor,
-                    onDelete   : { vm.deleteMemory(memory) },
-                    onPin      : { vm.togglePin(memory) },
-                    onEdit     : {
-                        editText     = memory.content
-                        editingMemory = memory
+
+            // ── Pinned section ───────────────────────────────────────────
+            if !pinned.isEmpty {
+                sectionHeader("PINNED")
+                ForEach(Array(pinned.enumerated()), id: \.element.id) { i, memory in
+                    memoryRow(memory)
+                    if i < pinned.count - 1 {
+                        GlassDivider(opacity: 0.05)
+                            .padding(.horizontal, SpektTheme.Spacing.md + 18)
                     }
-                )
-                if i < vm.memories.count - 1 {
+                }
+            }
+
+            // ── Divider between sections ─────────────────────────────────
+            if !pinned.isEmpty && !regular.isEmpty {
+                GlassDivider(opacity: 0.08)
+                    .padding(.horizontal, SpektTheme.Spacing.md)
+                    .padding(.vertical, 4)
+                sectionHeader("ALL MEMORIES")
+            }
+
+            // ── Regular section ──────────────────────────────────────────
+            ForEach(Array(regular.enumerated()), id: \.element.id) { i, memory in
+                memoryRow(memory)
+                if i < regular.count - 1 {
                     GlassDivider(opacity: 0.05)
                         .padding(.horizontal, SpektTheme.Spacing.md + 18)
                 }
             }
+
+            // ── No search results ────────────────────────────────────────
+            if filtered.isEmpty && !searchText.isEmpty {
+                VStack(spacing: 6) {
+                    Image(systemName: "magnifyingglass")
+                        .font(.system(size: 22, weight: .ultraLight))
+                        .foregroundColor(SpektTheme.Colors.textTertiary.opacity(0.40))
+                    Text("No memories match \"\(searchText)\"")
+                        .font(SpektTheme.Typography.bodySmall)
+                        .foregroundColor(SpektTheme.Colors.textTertiary)
+                        .multilineTextAlignment(.center)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, SpektTheme.Spacing.xl)
+                .padding(.horizontal, SpektTheme.Spacing.md)
+                .transition(.opacity)
+            }
         }
+        .animation(SpektTheme.Motion.springDefault, value: pinned.map(\.id))
+        .animation(SpektTheme.Motion.springDefault, value: filtered.count)
+    }
+
+    // MARK: Row helper (with context menu)
+
+    @ViewBuilder
+    private func memoryRow(_ memory: SpektMemory) -> some View {
+        MemoryRow(
+            memory     : memory,
+            accentColor: accentColor,
+            onDelete   : {
+                withAnimation(SpektTheme.Motion.springDefault) { vm.deleteMemory(memory) }
+            },
+            onPin      : { vm.togglePin(memory) },
+            onEdit     : { editText = memory.content; editingMemory = memory }
+        )
+        .contextMenu {
+            Button { editText = memory.content; editingMemory = memory } label: {
+                Label("Edit", systemImage: "pencil")
+            }
+            Button { vm.togglePin(memory) } label: {
+                Label(
+                    memory.isPinned ? "Unpin" : "Pin to top",
+                    systemImage: memory.isPinned ? "pin.slash" : "pin"
+                )
+            }
+            Divider()
+            Button(role: .destructive) {
+                withAnimation(SpektTheme.Motion.springDefault) { vm.deleteMemory(memory) }
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+    }
+
+    // MARK: Section header
+
+    @ViewBuilder
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(.system(size: 9, weight: .semibold))
+            .tracking(1.8)
+            .foregroundColor(SpektTheme.Colors.textTertiary.opacity(0.55))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, SpektTheme.Spacing.md)
+            .padding(.top, 8)
+            .padding(.bottom, 2)
     }
 
     private var actionRow: some View {
         HStack(spacing: SpektTheme.Spacing.sm) {
+
+            // Add Memory
             Button {
                 #if os(iOS)
                 HapticEngine.selection()
@@ -844,11 +977,11 @@ private struct MemoryListContent: View {
                 HStack(spacing: 5) {
                     Image(systemName: "plus")
                         .font(.system(size: 10, weight: .semibold))
-                    Text("Add Memory")
+                    Text("Add")
                         .font(SpektTheme.Typography.caption.weight(.medium))
                 }
                 .foregroundColor(accentColor)
-                .padding(.horizontal, 14)
+                .padding(.horizontal, 12)
                 .padding(.vertical, 7)
                 .background {
                     Capsule()
@@ -858,8 +991,36 @@ private struct MemoryListContent: View {
             }
             .buttonStyle(PressableButtonStyle())
 
+            // Pin All (shown only when nothing is pinned and there are memories)
+            if !vm.memories.isEmpty && vm.memories.allSatisfy({ !$0.isPinned }) {
+                Button {
+                    #if os(iOS)
+                    HapticEngine.selection()
+                    #endif
+                    for memory in vm.memories { vm.togglePin(memory) }
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "pin")
+                            .font(.system(size: 10))
+                        Text("Pin All")
+                            .font(SpektTheme.Typography.caption.weight(.medium))
+                    }
+                    .foregroundColor(SpektTheme.Colors.textTertiary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 7)
+                    .background {
+                        Capsule()
+                            .fill(Color.white.opacity(0.06))
+                            .overlay(Capsule().strokeBorder(Color.white.opacity(0.10), lineWidth: 0.5))
+                    }
+                }
+                .buttonStyle(PressableButtonStyle())
+                .transition(.scale.combined(with: .opacity))
+            }
+
             Spacer()
 
+            // Reset (destructive — tucked to the right)
             if !vm.memories.isEmpty {
                 Button {
                     #if os(iOS)
@@ -867,14 +1028,26 @@ private struct MemoryListContent: View {
                     #endif
                     vm.showResetConfirm = true
                 } label: {
-                    Text("Reset Identity")
-                        .font(SpektTheme.Typography.caption.weight(.medium))
-                        .foregroundColor(SpektTheme.Colors.destructive.opacity(0.75))
+                    HStack(spacing: 4) {
+                        Image(systemName: "trash")
+                            .font(.system(size: 10))
+                        Text("Clear All")
+                            .font(SpektTheme.Typography.caption.weight(.medium))
+                    }
+                    .foregroundColor(SpektTheme.Colors.destructive.opacity(0.65))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 7)
+                    .background {
+                        Capsule()
+                            .fill(SpektTheme.Colors.destructive.opacity(0.08))
+                            .overlay(Capsule().strokeBorder(SpektTheme.Colors.destructive.opacity(0.18), lineWidth: 0.5))
+                    }
                 }
                 .buttonStyle(PressableButtonStyle(scale: 0.94))
                 .transition(.opacity)
             }
         }
+        .animation(SpektTheme.Motion.springDefault, value: vm.memories.isEmpty)
         .padding(.horizontal, SpektTheme.Spacing.md)
         .padding(.top, 10)
         .padding(.bottom, SpektTheme.Spacing.sm)
