@@ -617,6 +617,7 @@ private struct MemoryRow: View {
     let accentColor: Color
     let onDelete   : () -> Void
     let onPin      : () -> Void
+    let onEdit     : () -> Void
 
     @State private var appeared = false
 
@@ -660,7 +661,16 @@ private struct MemoryRow: View {
             Spacer(minLength: 0)
 
             // Actions
-            HStack(spacing: 10) {
+            HStack(spacing: 12) {
+                Button {
+                    onEdit()
+                } label: {
+                    Image(systemName: "pencil")
+                        .font(.system(size: 12, weight: .light))
+                        .foregroundColor(SpektTheme.Colors.textTertiary.opacity(0.55))
+                }
+                .buttonStyle(PressableButtonStyle(scale: 0.88))
+
                 Button {
                     onPin()
                 } label: {
@@ -696,6 +706,9 @@ private struct MemoryListContent: View {
     let accentColor: Color
     @ObservedObject var vm: SignalViewModel
 
+    @State private var editingMemory: SpektMemory? = nil
+    @State private var editText     : String       = ""
+
     var body: some View {
         VStack(spacing: 0) {
 
@@ -724,6 +737,13 @@ private struct MemoryListContent: View {
             actionRow
         }
         .padding(.vertical, SpektTheme.Spacing.sm)
+        .sheet(item: $editingMemory) { memory in
+            EditMemorySheet(memory: memory, initialText: editText, accentColor: accentColor, vm: vm)
+                .presentationDetents([.height(420)])
+                .presentationDragIndicator(.hidden)
+                .presentationBackground(SpektTheme.Colors.base)
+                .presentationCornerRadius(SpektTheme.Radius.xl)
+        }
     }
 
     private var loadingPlaceholder: some View {
@@ -799,7 +819,11 @@ private struct MemoryListContent: View {
                     memory     : memory,
                     accentColor: accentColor,
                     onDelete   : { vm.deleteMemory(memory) },
-                    onPin      : { vm.togglePin(memory) }
+                    onPin      : { vm.togglePin(memory) },
+                    onEdit     : {
+                        editText     = memory.content
+                        editingMemory = memory
+                    }
                 )
                 if i < vm.memories.count - 1 {
                     GlassDivider(opacity: 0.05)
@@ -1157,6 +1181,137 @@ private struct AddMemorySheet: View {
     }
 }
 
+// MARK: - Edit Memory Sheet
+
+private struct EditMemorySheet: View {
+    let memory     : SpektMemory
+    let initialText: String
+    let accentColor: Color
+    @ObservedObject var vm: SignalViewModel
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var text    = ""
+    @State private var saving  = false
+    @State private var appeared = false
+    @FocusState private var focused: Bool
+
+    var body: some View {
+        ZStack {
+            SpektTheme.Colors.base.ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                Capsule()
+                    .fill(Color.white.opacity(0.12))
+                    .frame(width: 36, height: 4)
+                    .padding(.top, 14)
+
+                Spacer().frame(height: 24)
+
+                ZStack {
+                    Circle()
+                        .fill(accentColor.opacity(0.10))
+                        .frame(width: 56, height: 56)
+                        .overlay(Circle().strokeBorder(accentColor.opacity(0.18), lineWidth: 0.5))
+                    Image(systemName: "pencil")
+                        .font(.system(size: 20, weight: .light))
+                        .foregroundColor(accentColor)
+                }
+                .scaleEffect(appeared ? 1 : 0.80)
+
+                Spacer().frame(height: 18)
+
+                Text("Edit Memory")
+                    .font(SpektTheme.Typography.titleLarge)
+                    .foregroundColor(SpektTheme.Colors.textPrimary)
+
+                Spacer().frame(height: 22)
+
+                ZStack(alignment: .topLeading) {
+                    if text.isEmpty {
+                        Text("Memory content…")
+                            .font(SpektTheme.Typography.bodySmall)
+                            .foregroundColor(SpektTheme.Colors.textTertiary.opacity(0.50))
+                            .padding(.top, 10)
+                            .padding(.leading, 14)
+                            .allowsHitTesting(false)
+                    }
+                    TextEditor(text: $text)
+                        .font(SpektTheme.Typography.bodySmall)
+                        .foregroundColor(SpektTheme.Colors.textPrimary)
+                        .scrollContentBackground(.hidden)
+                        .frame(height: 80)
+                        .padding(.horizontal, 10)
+                        .focused($focused)
+                }
+                .background {
+                    RoundedRectangle(cornerRadius: SpektTheme.Radius.md, style: .continuous)
+                        .fill(Color.white.opacity(0.05))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: SpektTheme.Radius.md, style: .continuous)
+                                .strokeBorder(Color.white.opacity(0.10), lineWidth: 0.5)
+                        }
+                }
+                .padding(.horizontal, SpektTheme.Spacing.xl)
+
+                Spacer().frame(height: 22)
+
+                VStack(spacing: 10) {
+                    Button {
+                        guard !saving else { return }
+                        saving = true
+                        Task {
+                            await vm.editMemory(memory, newContent: text)
+                            saving = false
+                            dismiss()
+                        }
+                    } label: {
+                        HStack(spacing: 8) {
+                            if saving {
+                                ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .white)).scaleEffect(0.75)
+                            } else {
+                                Image(systemName: "checkmark.circle.fill").font(.system(size: 14))
+                            }
+                            Text(saving ? "Saving…" : "Save Changes")
+                                .font(SpektTheme.Typography.titleSmall)
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 15)
+                        .background {
+                            Capsule()
+                                .fill(accentColor)
+                                .overlay { Capsule().fill(LinearGradient(colors: [Color.white.opacity(0.16), Color.clear], startPoint: .top, endPoint: .center)) }
+                                .shadow(color: accentColor.opacity(0.40), radius: 16, x: 0, y: 5)
+                        }
+                    }
+                    .buttonStyle(PressableButtonStyle(scale: 0.97))
+                    .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || saving || text == memory.content)
+                    .opacity(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || text == memory.content ? 0.45 : 1.0)
+
+                    Button { dismiss() } label: {
+                        Text("Cancel")
+                            .font(SpektTheme.Typography.bodyMedium)
+                            .foregroundColor(SpektTheme.Colors.textSecondary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                    }
+                    .buttonStyle(PressableButtonStyle(scale: 0.98))
+                }
+                .padding(.horizontal, SpektTheme.Spacing.xl)
+
+                Spacer()
+            }
+            .opacity(appeared ? 1 : 0)
+            .offset(y: appeared ? 0 : 16)
+        }
+        .onAppear {
+            text = initialText
+            withAnimation(SpektTheme.Motion.springDefault.delay(0.05)) { appeared = true }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { focused = true }
+        }
+    }
+}
+
 // MARK: - Signal Card
 
 struct SignalCard: View {
@@ -1243,7 +1398,9 @@ struct SignalCard: View {
                         ? prefs.collapsedSummary
                         : section == .context && !isExpanded
                             ? "\(vm.memoriesCount) nodes"
-                            : section.subtitle
+                            : section == .patterns && !isExpanded
+                                ? "\(vm.effectivePatterns.sessionsThisWeek) sessions this week"
+                                : section.subtitle
                 )
                 .font(SpektTheme.Typography.bodySmall)
                 .foregroundColor(SpektTheme.Colors.textTertiary)
@@ -1297,7 +1454,8 @@ struct SignalView: View {
     /// The default value lets previews and standalone usage work without ceremony.
     @ObservedObject var vm: SignalViewModel
 
-    @State private var expandedSection: SignalSection? = nil
+    // Context Memory opens by default — the page's core value
+    @State private var expandedSection: SignalSection? = .context
 
     @State private var headerVisible = false
     @State private var coreVisible   = false

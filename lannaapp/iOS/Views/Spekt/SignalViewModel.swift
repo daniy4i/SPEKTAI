@@ -141,6 +141,20 @@ final class SignalViewModel: ObservableObject {
         }
     }
 
+    /// Optimistic edit — updates content locally then syncs to server.
+    func editMemory(_ memory: SpektMemory, newContent: String) async {
+        let trimmed = newContent.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty,
+              let idx = memories.firstIndex(where: { $0.id == memory.id }) else { return }
+        withAnimation(SpektTheme.Motion.springDefault) { memories[idx].content = trimmed }
+        do {
+            let confirmed = try await api.editMemory(id: memory.id, content: trimmed)
+            if let idx2 = memories.firstIndex(where: { $0.id == memory.id }) {
+                memories[idx2] = confirmed
+            }
+        } catch { /* keep optimistic update */ }
+    }
+
     /// Optimistic delete.
     func deleteMemory(_ memory: SpektMemory) {
         withAnimation(SpektTheme.Motion.springDefault) {

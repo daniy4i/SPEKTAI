@@ -123,6 +123,15 @@ final class SpektAPI {
         let _: EmptyResponse = try await request("PATCH", path: "/memories/\(id)", body: PinBody(isPinned: pinned))
     }
 
+    func editMemory(id: String, content: String) async throws -> SpektMemory {
+        if useMocks {
+            await mockDelay(0.2)
+            return SpektMemory(id: id, content: content, timestamp: Date(), isPinned: false)
+        }
+        struct Body: Encodable { let content: String }
+        return try await request("PATCH", path: "/memories/\(id)", body: Body(content: content))
+    }
+
     func deleteAllMemories() async throws {
         if useMocks { await mockDelay(0.6); return }
         let _: EmptyResponse = try await request("DELETE", path: "/memories")

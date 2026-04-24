@@ -68,11 +68,10 @@ final class PreferencesStore: ObservableObject {
         "\(voiceTone)  ·  \(format)  ·  \(detailLevel)"
     }
 
-    /// Two-word summary shown in the Signal card collapsed subtitle.
+    /// Short summary shown in the Signal card collapsed subtitle.
     var collapsedSummary: String {
-        let v = voiceTone.components(separatedBy: " ").prefix(2).joined(separator: " ")
         let f = format.components(separatedBy: " ").first ?? format
-        return "\(v) · \(f)"
+        return "\(voiceTone) · \(f)"
     }
 
     // MARK: - Actions
