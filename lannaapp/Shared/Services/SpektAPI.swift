@@ -40,11 +40,8 @@ final class SpektAPI {
     static let shared = SpektAPI()
     private init() {}
 
-    // Replace before shipping
-    private let baseURL = "https://api.spekt.ai/v1"
-
-    /// Flip to `false` once a real backend is available.
-    private let useMocks = true
+    private let baseURL  = SpektConfig.apiBase
+    private let useMocks = SpektConfig.useMocks
 
     private let decoder: JSONDecoder = {
         let d = JSONDecoder()

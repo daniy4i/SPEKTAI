@@ -1,7 +1,7 @@
 {
   "name": "spekt-backend",
   "version": "1.0.0",
-  "description": "SPEKT AI call pipeline — Twilio recording → Whisper transcription → GPT intelligence → structured output",
+  "description": "SPEKT AI call pipeline — Twilio webhook → Whisper → GPT-4o extraction → iOS",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

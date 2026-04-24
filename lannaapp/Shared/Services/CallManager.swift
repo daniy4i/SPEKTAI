@@ -10,7 +10,7 @@ import SwiftUI
 
 // MARK: - Constant
 // Replace this with the real SPEKT AI phone number before shipping.
-let SPEKT_PHONE_NUMBER = "+15550001234"
+let SPEKT_PHONE_NUMBER = "+19107735824"
 
 /// Formats a raw E.164 US number into "(XXX) XXX-XXXX".
 func formattedPhoneNumber(_ raw: String = SPEKT_PHONE_NUMBER) -> String {

@@ -29,7 +29,7 @@ final class TaskService: ObservableObject {
 
     // MARK: Config
 
-    private let baseURL = "https://your-backend.railway.app/api"
+    private let baseURL = SpektConfig.apiBase
 
     private let decoder: JSONDecoder = {
         let d = JSONDecoder()
@@ -186,8 +186,7 @@ final class TaskService: ObservableObject {
             tasks.removeAll { $0.id == id }
         }
         Task {
-            let url = URL(string: "\(baseURL)/tasks/\(id)")!
-            var req = URLRequest(url: url)
+            var req = URLRequest(url: URL(string: "\(baseURL)/tasks/\(id)")!)
             req.httpMethod = "DELETE"
             try? await URLSession.shared.data(for: req)
         }

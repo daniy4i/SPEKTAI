@@ -49,16 +49,19 @@ final class CallSessionService: ObservableObject {
     @Published var currentSession : CallSessionStatusResponse? = nil
     @Published var showProcessing : Bool = false
     @Published var resultsApplied : Bool = false    // prevents double-apply
+    @Published var backendError   : String? = nil   // surfaced for debug UI
 
     // Persisted so polling survives a brief app kill/restart
     @AppStorage("spekt_pending_session_id")
     var pendingSessionId: String = ""
 
+    // Prevents the same completed call from surfacing twice
+    @AppStorage("spekt_last_shown_call_id")
+    private var lastShownCallId: String = ""
+
     // ── Config ────────────────────────────────────────────────────────────
 
-    // Replace with your deployed backend URL before shipping.
-    // Use http://localhost:3000 during local development with ngrok.
-    private let baseURL = "https://your-backend.railway.app/api"
+    private let baseURL = SpektConfig.apiBase
 
     private let pollInterval: TimeInterval = 3.0
     private let maxPollDuration: TimeInterval = 10 * 60  // 10 min
@@ -96,11 +99,43 @@ final class CallSessionService: ObservableObject {
         print("[CallSession] Session initiated: \(response.sessionId)")
     }
 
-    /// Step 2: Called when app returns to foreground and there's a pending session.
+    /// Step 2: Called when app returns to foreground.
+    /// If a session was initiated from the app, polls that session.
+    /// If no session ID (user called the number directly), fetches the latest
+    /// completed call and shows results if it hasn't been seen before.
     func handleAppForeground() {
-        guard !pendingSessionId.isEmpty else { return }
-        showProcessing = true
-        startPolling(sessionId: pendingSessionId)
+        if !pendingSessionId.isEmpty {
+            showProcessing = true
+            startPolling(sessionId: pendingSessionId)
+        } else {
+            Task { await checkForLatestCall() }
+        }
+    }
+
+    /// Fetches GET /api/calls/latest and surfaces results if they're new.
+    private func checkForLatestCall() async {
+        guard let url = URL(string: "\(baseURL)/calls/latest") else { return }
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+            let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+            // 404 = no calls yet — not an error
+            guard status == 200 else { return }
+            let decoded = try decoder.decode(CallSessionStatusResponse.self, from: data)
+            guard decoded.status == .ready,
+                  decoded.results != nil,
+                  decoded.sessionId != lastShownCallId else { return }
+            currentSession = decoded
+            showProcessing  = true
+        } catch let urlError as URLError where urlError.code == .notConnectedToInternet {
+            // Silently ignore — user is likely still on the call
+        } catch let urlError as URLError where urlError.code == .timedOut {
+            print("[CallSession] Backend timed out — will retry on next foreground")
+        } catch let urlError as URLError where urlError.code == .cannotConnectToHost {
+            print("[CallSession] Cannot reach backend — check SpektConfig.baseURL")
+            backendError = "Cannot reach backend. Check your Railway URL."
+        } catch {
+            print("[CallSession] checkForLatestCall: \(error.localizedDescription)")
+        }
     }
 
     /// Step 3: Manually start polling (called from handleAppForeground or after dial).
@@ -138,13 +173,14 @@ final class CallSessionService: ObservableObject {
 
     /// Step 4: Dismiss processing view, clear state.
     func dismiss() {
+        if let id = currentSession?.sessionId { lastShownCallId = id }
         pollingTask?.cancel()
-        pollingTask     = nil
-        pollingStarted  = nil
+        pollingTask      = nil
+        pollingStarted   = nil
         pendingSessionId = ""
-        currentSession  = nil
-        showProcessing  = false
-        resultsApplied  = false
+        currentSession   = nil
+        showProcessing   = false
+        resultsApplied   = false
     }
 
     /// Step 5: Apply results to Signal + Activity screens.

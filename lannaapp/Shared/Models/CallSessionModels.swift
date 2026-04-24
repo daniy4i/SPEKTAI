@@ -98,8 +98,15 @@ struct ExtractedTask: Decodable, Identifiable {
     let id      : String
     let title   : String
     let detail  : String?
-    let dueDate : String?
-    let priority: String   // "high" | "medium" | "low"
+    let dueDate : String?   // JSON key is "deadline" — see CodingKeys below
+    let priority: String    // "high" | "medium" | "low"
+
+    // The backend stores the date as "deadline" (from the intelligence prompt).
+    // "dueDate" / "due_date" would never match — explicit mapping required.
+    private enum CodingKeys: String, CodingKey {
+        case id, title, detail, priority
+        case dueDate = "deadline"
+    }
 
     var priorityColor: String {
         switch priority {

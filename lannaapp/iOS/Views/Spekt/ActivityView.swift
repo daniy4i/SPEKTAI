@@ -10,7 +10,7 @@
 import SwiftUI
 
 // MARK: - Category
-enum ActivityCategory: String {
+enum ActivityCategory: String, Codable {
     case booking       = "booking"
     case scheduling    = "scheduling"
     case travel        = "travel"
@@ -57,14 +57,19 @@ enum ActivityCategory: String {
 }
 
 // MARK: - Activity Item
-struct ActivityItem: Identifiable {
-    let id       = UUID()
-    let action   : String          // Short outcome — the headline
-    let detail   : String          // One-line summary
-    let expanded : String          // Full detail shown on expand
-    let context  : String?         // Why it happened — the "intent" behind it
+struct ActivityItem: Identifiable, Codable {
+    let id       = UUID()           // excluded from Codable; each decode gets a fresh UUID
+    let action   : String
+    let detail   : String
+    let expanded : String
+    let context  : String?
     let category : ActivityCategory
     let timestamp: Date
+
+    // id is intentionally absent — it is not persisted/decoded
+    private enum CodingKeys: String, CodingKey {
+        case action, detail, expanded, context, category, timestamp
+    }
 
     var timeAgo: String {
         let d = Date().timeIntervalSince(timestamp)
@@ -179,6 +184,69 @@ extension [ActivityItem] {
                 items: items.sorted { $0.timestamp > $1.timestamp }
             )
         }
+    }
+}
+
+// MARK: - Activity Store (persisted)
+
+/// Persists activity items to UserDefaults across app launches.
+/// Capped at 100 items to keep UserDefaults lean.
+@MainActor
+final class ActivityStore: ObservableObject {
+    static let shared = ActivityStore()
+    private init() { load() }
+
+    @Published private(set) var items: [ActivityItem] = []
+
+    private let key      = "spekt_activity_items_v2"
+    private let maxItems = 100
+
+    func prepend(_ item: ActivityItem) {
+        items.insert(item, at: 0)
+        if items.count > maxItems { items = Array(items.prefix(maxItems)) }
+        save()
+    }
+
+    private func save() {
+        guard let data = try? JSONEncoder().encode(items) else { return }
+        UserDefaults.standard.set(data, forKey: key)
+    }
+
+    private func load() {
+        guard
+            let data  = UserDefaults.standard.data(forKey: key),
+            let saved = try? JSONDecoder().decode([ActivityItem].self, from: data)
+        else { return }
+        items = saved
+    }
+}
+
+// MARK: - ActivityItem convenience init from call results
+
+extension ActivityItem {
+    init(from results: CallSessionResults) {
+        let headline: String = results.keyOutcomes.first
+            .map { String($0.prefix(80)) }
+            ?? String(results.summary.prefix(72))
+
+        let detailParts = [
+            results.tasks.count    > 0 ? "\(results.tasks.count) task\(results.tasks.count    == 1 ? "" : "s")"       : nil,
+            results.memories.count > 0 ? "\(results.memories.count) memor\(results.memories.count == 1 ? "y" : "ies")" : nil,
+        ].compactMap { $0 }
+
+        var expandedParts = [results.summary]
+        if !results.keyOutcomes.isEmpty {
+            expandedParts.append(
+                "\nKey outcomes:\n" + results.keyOutcomes.map { "• \($0)" }.joined(separator: "\n")
+            )
+        }
+
+        self.action    = headline
+        self.detail    = detailParts.isEmpty ? "Call processed" : detailParts.joined(separator: " · ")
+        self.expanded  = expandedParts.joined(separator: "\n")
+        self.context   = results.keyOutcomes.count > 1 ? results.keyOutcomes.dropFirst().first : nil
+        self.category  = results.tasks.count > 0 ? .tasks : .research
+        self.timestamp = Date()
     }
 }
 
@@ -482,16 +550,15 @@ struct ActivityView: View {
     @State private var searchQuery  : String  = ""
     @State private var showTasksView          = false
 
-    // Live items — empty until real calls produce results
-    @State private var liveItems: [ActivityItem] = []
-    @ObservedObject private var taskService = TaskService.shared
+    @ObservedObject private var activityStore = ActivityStore.shared
+    @ObservedObject private var taskService  = TaskService.shared
 
     private var filtered: [ActivityItem] {
         guard !searchQuery.trimmingCharacters(in: .whitespaces).isEmpty else {
-            return liveItems
+            return activityStore.items
         }
         let q = searchQuery.lowercased()
-        return liveItems.filter {
+        return activityStore.items.filter {
             $0.action.lowercased().contains(q)   ||
             $0.detail.lowercased().contains(q)   ||
             $0.expanded.lowercased().contains(q) ||
@@ -499,7 +566,7 @@ struct ActivityView: View {
         }
     }
     private var groups     : [ActivityGroup] { filtered.groupedByDate() }
-    private var totalCount : Int             { liveItems.count }
+    private var totalCount : Int             { activityStore.items.count }
 
     var body: some View {
         ZStack {
@@ -567,7 +634,7 @@ struct ActivityView: View {
                     }
 
                     // ── Empty states ───────────────────────────────────────
-                    if liveItems.isEmpty && searchQuery.isEmpty {
+                    if activityStore.items.isEmpty && searchQuery.isEmpty {
                         // No calls made yet
                         VStack(spacing: 12) {
                             Image(systemName: "waveform.path")
@@ -634,38 +701,8 @@ struct ActivityView: View {
         // Receive new call results and prepend as an activity item
         .onReceive(NotificationCenter.default.publisher(for: .spektNewCallResults)) { notification in
             guard let results = notification.object as? CallSessionResults else { return }
-
-            // Headline: first key outcome if available, else trimmed summary
-            let headline: String = {
-                if let first = results.keyOutcomes.first {
-                    return String(first.prefix(80))
-                }
-                return String(results.summary.prefix(72))
-            }()
-
-            // Detail line: task + memory counts
-            let detailParts = [
-                results.tasks.count    > 0 ? "\(results.tasks.count) task\(results.tasks.count == 1 ? "" : "s")"       : nil,
-                results.memories.count > 0 ? "\(results.memories.count) memor\(results.memories.count == 1 ? "y" : "ies")" : nil,
-            ].compactMap { $0 }
-            let detail = detailParts.isEmpty ? "Call processed" : detailParts.joined(separator: " · ")
-
-            // Expanded body: full summary + all key outcomes
-            var expandedParts = [results.summary]
-            if !results.keyOutcomes.isEmpty {
-                expandedParts.append("\nKey outcomes:\n" + results.keyOutcomes.map { "• \($0)" }.joined(separator: "\n"))
-            }
-
-            let newItem = ActivityItem(
-                action:    headline,
-                detail:    detail,
-                expanded:  expandedParts.joined(separator: "\n"),
-                context:   results.keyOutcomes.count > 1 ? results.keyOutcomes.dropFirst().first : nil,
-                category:  results.tasks.count > 0 ? .tasks : .research,
-                timestamp: Date()
-            )
             withAnimation(SpektTheme.Motion.springDefault) {
-                liveItems.insert(newItem, at: 0)
+                activityStore.prepend(ActivityItem(from: results))
             }
             #if os(iOS)
             HapticEngine.notify(.success)

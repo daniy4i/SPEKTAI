@@ -1,42 +1,44 @@
 /**
  * routes/twilio.js
  *
- * Twilio webhooks — these fire from Twilio's servers, not the iOS app.
+ * Twilio webhook receiver — two endpoints:
  *
  *   POST /twilio/voice
- *     — Fires when the AI phone number receives an inbound call.
- *       Matches the call to the most recent pending session by timing.
- *       Returns TwiML that greets the caller and starts recording.
+ *     Fires when +1 (910) 773-5824 receives a call.
+ *     Returns TwiML that simply records the call.
+ *     The AI conversation happens externally; this just captures the audio.
  *
  *   POST /twilio/recording-complete
- *     — Fires when the recording is finalised (a few seconds after hangup).
- *       Kicks off the full pipeline:
- *         download recording → Whisper transcription → GPT extraction → store
+ *     Fires once the recording is finalised (a few seconds after hangup).
+ *     Downloads the audio, transcribes with Whisper, extracts tasks/memories
+ *     with GPT-4o, and stores everything so the iOS app can fetch it.
  *
- * Security note: In production add Twilio webhook signature validation:
- *   const twilio = require('twilio');
- *   const validateRequest = twilio.validateRequest(...);
+ * NO in-server AI conversation. NO WebSocket. NO Realtime API.
+ * The AI at (910) 773-5824 handles the live call. We process the recording.
  */
 
 const { Router } = require('express');
-const OpenAI = require('openai');
-const store     = require('../services/sessionStore');
-const taskStore = require('../services/taskStore');
-const { transcribeRecording } = require('../services/transcription');
-const { extractInsights } = require('../services/intelligence');
+const OpenAI     = require('openai');
+
+const store       = require('../services/sessionStore');
+const taskStore   = require('../services/taskStore');
+const memoryStore = require('../services/memoryStore');
+const validateTwilio              = require('../middleware/twilioValidation');
+const { transcribeRecording }     = require('../services/transcription');
+const { extractInsights }         = require('../services/intelligence');
 
 const router = Router();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// ── POST /twilio/voice ────────────────────────────────────────────────────
+// ── POST /twilio/voice ────────────────────────────────────────────────────────
 //
-// Twilio sends: From, To, CallSid, CallStatus
-// We respond with TwiML.
+// Twilio POSTs here when a call arrives. We link it to the most recent pending
+// session (created by the iOS app just before the user dialed) and return TwiML
+// that records the conversation silently in the background.
 
-router.post('/voice', (req, res) => {
+router.post('/voice', validateTwilio, (req, res) => {
   const { From: callerPhone, CallSid } = req.body;
 
-  // Link call to most recent pending session
   const session = store.findMostRecentPending();
   if (session) {
     store.update(session.id, {
@@ -47,114 +49,134 @@ router.post('/voice', (req, res) => {
     });
     console.log(`[Twilio] Call ${CallSid} linked to session ${session.id}`);
   } else {
-    console.warn(`[Twilio] No pending session found for call ${CallSid} from ${callerPhone}`);
+    console.warn(`[Twilio] No pending session for call ${CallSid} — creating one`);
+    const newSession = store.create({ userId: callerPhone ?? 'unknown' });
+    store.update(newSession.id, {
+      callSid:     CallSid,
+      callerPhone: callerPhone,
+      status:      'in_call',
+      progress:    'Call in progress…',
+    });
   }
 
-  const baseUrl = process.env.BASE_URL;
+  const baseUrl = process.env.BASE_URL ?? '';
 
-  // TwiML response: greet + record
+  // Record the full call. When it ends, Twilio POSTs to /twilio/recording-complete.
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Say voice="Polly.Joanna" language="en-US">
-    Hey, I'm ready. Go ahead — I'm listening and recording.
-  </Say>
   <Record
     action="${baseUrl}/twilio/recording-complete"
-    recordingStatusCallback="${baseUrl}/twilio/recording-status"
+    recordingStatusCallback="${baseUrl}/twilio/recording-complete"
     maxLength="3600"
-    timeout="5"
+    timeout="10"
     transcribe="false"
     playBeep="false"
   />
-  <Say voice="Polly.Joanna">I didn't catch anything. Call back whenever you're ready.</Say>
 </Response>`;
 
   res.type('text/xml').send(twiml);
 });
 
-// ── POST /twilio/recording-complete ──────────────────────────────────────
+// ── POST /twilio/recording-complete ──────────────────────────────────────────
 //
-// Twilio sends: CallSid, RecordingUrl, RecordingDuration, RecordingSid
-// This fires *after* the call ends and the recording is ready.
-// We do NOT await the full pipeline here — we kick it off async and
-// respond 200 immediately so Twilio doesn't retry.
+// Twilio fires this once the recording is ready (usually a few seconds after
+// the call ends). We respond 200 immediately (so Twilio doesn't retry) and
+// kick off the async processing pipeline.
+//
+// Twilio sends: CallSid, RecordingUrl, RecordingDuration, RecordingSid, RecordingStatus
 
-router.post('/recording-complete', (req, res) => {
-  const { CallSid, RecordingUrl } = req.body;
+router.post('/recording-complete', validateTwilio, (req, res) => {
+  res.sendStatus(200); // acknowledge immediately
 
-  res.sendStatus(200); // Acknowledge immediately
+  const { CallSid, RecordingUrl, RecordingStatus } = req.body;
 
-  // Find session and kick off pipeline async
-  const session = store.findByCallSid(CallSid) ?? store.findMostRecentPending();
-  if (!session) {
-    console.error(`[Pipeline] No session for CallSid ${CallSid}`);
+  // Twilio fires this callback for in-progress AND completed statuses
+  if (RecordingStatus && RecordingStatus !== 'completed') {
+    console.log(`[Twilio] Recording status: ${RecordingStatus} — waiting for completed`);
     return;
   }
 
-  console.log(`[Pipeline] Starting for session ${session.id}`);
+  if (!RecordingUrl) {
+    console.error('[Twilio] recording-complete fired with no RecordingUrl');
+    return;
+  }
+
+  const session = store.findByCallSid(CallSid) ?? store.findMostRecentPending();
+  if (!session) {
+    console.error(`[Pipeline] No session for CallSid ${CallSid} — dropping`);
+    return;
+  }
+
+  console.log(`[Pipeline] Recording ready for session ${session.id}, starting pipeline`);
+
   runPipeline(session.id, RecordingUrl).catch((err) => {
-    console.error(`[Pipeline] Fatal error for session ${session.id}:`, err);
+    console.error(`[Pipeline] Fatal for session ${session.id}:`, err.message);
     store.update(session.id, {
       status:       'failed',
-      progress:     'Something went wrong.',
+      progress:     'Something went wrong processing your call.',
       errorMessage: err.message,
     });
   });
 });
 
-// ── POST /twilio/recording-status (optional status callback) ─────────────
-
-router.post('/recording-status', (req, res) => {
-  console.log('[Twilio] Recording status:', req.body.RecordingStatus);
-  res.sendStatus(200);
-});
-
-// ── Pipeline ──────────────────────────────────────────────────────────────
+// ── Pipeline ──────────────────────────────────────────────────────────────────
 
 async function runPipeline(sessionId, recordingUrl) {
-  // Stage 1: Processing
+  const session = store.get(sessionId);
+  const userId  = session?.userId ?? 'anonymous';
+
+  // Stage 1: Transcription
   store.update(sessionId, {
-    status:      'processing',
-    progress:    'Processing your call…',
+    status:      'transcribing',
+    progress:    'Transcribing conversation…',
     recordingUrl,
   });
 
-  // Stage 2: Transcription
-  store.update(sessionId, {
-    status:   'transcribing',
-    progress: 'Transcribing conversation…',
-  });
-
   const transcript = await transcribeRecording(openai, recordingUrl);
-  console.log(`[Pipeline] Transcription complete (${transcript.length} chars)`);
+  console.log(`[Pipeline] Transcribed ${transcript.length} chars`);
 
-  // Stage 3: Intelligence extraction
+  if (!transcript.trim()) {
+    store.update(sessionId, {
+      status:       'failed',
+      progress:     'No speech detected in recording.',
+      errorMessage: 'Empty transcript',
+    });
+    return;
+  }
+
+  // Stage 2: GPT-4o extraction
   store.update(sessionId, {
     status:   'extracting',
     progress: 'Extracting insights…',
   });
 
   const insights = await extractInsights(openai, transcript);
-  console.log(`[Pipeline] Insights extracted — ${insights.tasks.length} tasks, ${insights.memories.length} memories`);
+  console.log(
+    `[Pipeline] Extracted — ${insights.tasks.length} tasks, ` +
+    `${insights.memories.length} memories, ${insights.key_outcomes.length} outcomes`
+  );
 
-  // Stage 4: Persist tasks to task store
+  // Stage 3: Persist tasks and memories
   const persistedTasks = taskStore.createBatch(insights.tasks, sessionId);
-  console.log(`[Pipeline] Persisted ${persistedTasks.length} tasks`);
+  memoryStore.createBatch(insights.memories, userId);
 
-  // Stage 5: Store structured output on session
-  const results = {
-    transcript,
-    summary:            insights.summary,
-    tasks:              persistedTasks,   // use persisted (have stable IDs)
-    memories:           insights.memories,
-    preferencesUpdates: insights.preferencesUpdates,
-    processedAt:        new Date().toISOString(),
-  };
-
+  // Stage 4: Store results on session
+  // Key names must match iOS CodingKeys exactly:
+  //   key_outcomes        → case keyOutcomes        = "key_outcomes"
+  //   preferences_updates → case preferencesUpdates = "preferences_updates"
+  //   processedAt         → case processedAt         (literal camelCase)
   store.update(sessionId, {
     status:   'ready',
     progress: 'Results ready.',
-    results,
+    results:  {
+      transcript,
+      summary:             insights.summary,
+      key_outcomes:        insights.key_outcomes,
+      tasks:               persistedTasks,
+      memories:            insights.memories,
+      preferences_updates: insights.preferencesUpdates,
+      processedAt:         new Date().toISOString(),
+    },
   });
 
   console.log(`[Pipeline] Session ${sessionId} ready`);

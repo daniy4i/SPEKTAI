@@ -250,6 +250,9 @@ struct SpektHomeView: View {
     // Pre-call animation state
     @State private var ctaScale: CGFloat = 1.0
 
+    // Debug overlay — long-press the "SPEKT" header to open
+    @State private var showDebug = false
+
     // Live outcomes — populated from real call results
     @State private var recentOutcomes: [RecentOutcome] = []
     @State private var isCalling = false
@@ -316,6 +319,9 @@ struct SpektHomeView: View {
             .onPreferenceChange(ScrollOffsetKey.self) { scrollOffset = $0 }
         }
         .onAppear { staggerIn() }
+        .sheet(isPresented: $showDebug) {
+            DebugInfoView()
+        }
         .onReceive(NotificationCenter.default.publisher(for: .spektNewCallResults)) { notification in
             guard let results = notification.object as? CallSessionResults else { return }
             var newOutcomes: [RecentOutcome] = []
@@ -364,6 +370,12 @@ struct SpektHomeView: View {
         }
         .opacity(headerAppeared ? 1 : 0)
         .offset(y: headerAppeared ? 0 : -10)
+        .onLongPressGesture(minimumDuration: 1.5) {
+            #if os(iOS)
+            HapticEngine.impact(.medium)
+            #endif
+            showDebug = true
+        }
     }
 
     // MARK: Hero Text
