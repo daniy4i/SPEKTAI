@@ -16,5 +16,9 @@
 	<string>SPEKT AI uses Contacts to look up people you mention and personalise responses.</string>
 	<key>NSRemindersFullAccessUsageDescription</key>
 	<string>SPEKT AI uses Reminders to create tasks and follow up on action items from your calls.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>SPEKT needs microphone access for call features.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>SPEKT needs camera access.</string>
 </dict>
 </plist>
