@@ -85,6 +85,23 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', ts: new Date().toISOString() });
 });
 
+// ── Keep-alive ────────────────────────────────────────────────────────────────
+
+// Keep-alive ping — prevents Railway free tier from sleeping
+// Pings itself every 14 minutes
+if (process.env.BASE_URL) {
+  const PING_INTERVAL = 14 * 60 * 1000; // 14 minutes
+  setInterval(async () => {
+    try {
+      const response = await fetch(`${process.env.BASE_URL}/health`);
+      console.log(`[KeepAlive] Ping ${response.status} at ${new Date().toISOString()}`);
+    } catch (err) {
+      console.warn(`[KeepAlive] Ping failed: ${err.message}`);
+    }
+  }, PING_INTERVAL);
+  console.log('[KeepAlive] Self-ping enabled every 14 minutes');
+}
+
 // ── Start ─────────────────────────────────────────────────────────────────────
 
 app.listen(PORT, () => {

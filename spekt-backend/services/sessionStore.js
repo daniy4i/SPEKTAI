@@ -23,12 +23,24 @@
  */
 
 const { v4: uuidv4 } = require('uuid');
+const persistence = require('./persistenceStore');
 
 const TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
 
 class SessionStore {
   /** @type {Map<string, object>} */
   #sessions = new Map();
+
+  constructor() {
+    // Load any persisted sessions from previous run
+    const persisted = persistence.load();
+    const stored = persisted.sessions ?? {};
+    for (const [id, session] of Object.entries(stored)) {
+      this.#sessions.set(id, session);
+      this.#scheduleExpiry(id);
+    }
+    console.log(`[SessionStore] Loaded ${this.#sessions.size} persisted sessions`);
+  }
 
   // ── Create ────────────────────────────────────────────────────────────────
 
@@ -79,6 +91,8 @@ class SessionStore {
     const session = this.#sessions.get(id);
     if (!session) return null;
     Object.assign(session, patch);
+    // Persist to disk after every update
+    persistence.save({ sessions: Object.fromEntries(this.#sessions), updatedAt: new Date().toISOString() });
     return session;
   }
 

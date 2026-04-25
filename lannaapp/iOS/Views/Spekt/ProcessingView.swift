@@ -122,7 +122,9 @@ private struct StageDots: View {
 // MARK: - Result Task Row
 
 private struct ResultTaskRow: View {
-    let task: ExtractedTask
+    let task     : ExtractedTask
+    let isChecked: Bool
+    let onToggle : () -> Void
 
     private var priorityColor: Color {
         switch task.priority {
@@ -134,17 +136,40 @@ private struct ResultTaskRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            RoundedRectangle(cornerRadius: 1)
-                .fill(priorityColor)
-                .frame(width: 2, height: 32)
-                .padding(.top, 2)
+            // Checkbox
+            Button(action: onToggle) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 4, style: .continuous)
+                        .strokeBorder(
+                            isChecked ? priorityColor : Color.white.opacity(0.22),
+                            lineWidth: 1.5
+                        )
+                        .frame(width: 20, height: 20)
+                        .background(
+                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                .fill(isChecked ? priorityColor.opacity(0.18) : Color.clear)
+                        )
+                    if isChecked {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(priorityColor)
+                    }
+                }
+            }
+            .buttonStyle(.plain)
+            .animation(SpektTheme.Motion.springSnappy, value: isChecked)
+            .padding(.top, 1)
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(task.title)
                     .font(SpektTheme.Typography.bodySmall)
                     .fontWeight(.medium)
-                    .foregroundColor(SpektTheme.Colors.textPrimary)
+                    .foregroundColor(isChecked
+                                     ? SpektTheme.Colors.textTertiary
+                                     : SpektTheme.Colors.textPrimary)
+                    .strikethrough(isChecked, color: SpektTheme.Colors.textTertiary)
                     .fixedSize(horizontal: false, vertical: true)
+                    .animation(SpektTheme.Motion.springDefault, value: isChecked)
 
                 if let detail = task.detail, !detail.isEmpty {
                     Text(detail)
@@ -173,10 +198,12 @@ struct ProcessingView: View {
     /// Injected so results can be pushed into the Signal screen.
     var signalVM: SignalViewModel?
 
-    @State private var appeared    = false
-    @State private var showResults = false
+    @State private var appeared       = false
+    @State private var showResults    = false
     /// 0 = header only, 1 = summary, 2 = outcomes, 3 = tasks, 4 = learned + CTA
-    @State private var revealStep  = 0
+    @State private var revealStep     = 0
+    @State private var checkedTaskIds : Set<String> = []
+    @State private var showTranscript  = false
 
     var body: some View {
         ZStack {
@@ -399,7 +426,21 @@ struct ProcessingView: View {
                         ) {
                             VStack(alignment: .leading, spacing: 14) {
                                 ForEach(results.tasks) { task in
-                                    ResultTaskRow(task: task)
+                                    ResultTaskRow(
+                                        task:      task,
+                                        isChecked: checkedTaskIds.contains(task.id)
+                                    ) {
+                                        #if os(iOS)
+                                        HapticEngine.impact(.light)
+                                        #endif
+                                        withAnimation(SpektTheme.Motion.springSnappy) {
+                                            if checkedTaskIds.contains(task.id) {
+                                                checkedTaskIds.remove(task.id)
+                                            } else {
+                                                checkedTaskIds.insert(task.id)
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -424,6 +465,47 @@ struct ProcessingView: View {
                                 }
                             }
                         }
+                    }
+
+                    // ── Transcript ────────────────────────────────────────
+                    if !results.transcript.isEmpty {
+                        sectionDivider(visible: revealStep >= 4)
+
+                        VStack(alignment: .leading, spacing: 12) {
+                            Button {
+                                withAnimation(SpektTheme.Motion.springDefault) {
+                                    showTranscript.toggle()
+                                }
+                            } label: {
+                                HStack {
+                                    Text("TRANSCRIPT")
+                                        .font(.system(size: 10, weight: .semibold))
+                                        .tracking(2.0)
+                                        .foregroundColor(SpektTheme.Colors.textTertiary)
+
+                                    Spacer()
+
+                                    Image(systemName: showTranscript ? "chevron.up" : "chevron.down")
+                                        .font(.system(size: 10, weight: .semibold))
+                                        .foregroundColor(SpektTheme.Colors.textTertiary.opacity(0.60))
+                                }
+                            }
+                            .buttonStyle(.plain)
+
+                            if showTranscript {
+                                Text(results.transcript)
+                                    .font(SpektTheme.Typography.caption)
+                                    .foregroundColor(SpektTheme.Colors.textTertiary)
+                                    .lineSpacing(4)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .transition(.opacity.combined(with: .move(edge: .top)))
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, SpektTheme.Spacing.xl)
+                        .opacity(revealStep >= 4 ? 1 : 0)
+                        .offset(y: revealStep >= 4 ? 0 : 18)
+                        .animation(SpektTheme.Motion.springDefault, value: revealStep >= 4)
                     }
 
                     Spacer(minLength: 128)
