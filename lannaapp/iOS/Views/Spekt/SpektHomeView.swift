@@ -213,15 +213,14 @@ private struct AmbientLight: View {
     var body: some View {
         RadialGradient(
             colors: [
-                SpektTheme.Colors.accent.opacity(intensity),
-                SpektTheme.Colors.accentSecondary.opacity(intensity * 0.4),
+                SpektTheme.Colors.neonGreen.opacity(intensity),
                 Color.clear
             ],
             center: UnitPoint(x: 0.5, y: 0.28 + yOffset / 600),
             startRadius: 0,
-            endRadius: 340
+            endRadius: 320
         )
-        .blur(radius: 28)
+        .blur(radius: 32)
         .ignoresSafeArea()
         .allowsHitTesting(false)
     }
@@ -249,6 +248,9 @@ struct SpektHomeView: View {
 
     // Pre-call animation state
     @State private var ctaScale: CGFloat = 1.0
+
+    // Clipboard feedback
+    @State private var copiedNumber = false
 
     // Debug overlay — long-press the "SPEKT" header to open
     @State private var showDebug = false
@@ -300,12 +302,28 @@ struct SpektHomeView: View {
                         ctaButton
                             .padding(.top, 32)
 
-                        Text(formattedPhoneNumber())
-                            .font(.system(size: 13, weight: .light))
-                            .tracking(1.8)
-                            .foregroundColor(SpektTheme.Colors.textTertiary.opacity(0.60))
-                            .padding(.top, 10)
-                            .opacity(ctaAppeared ? 1 : 0)
+                        Button {
+                            UIPasteboard.general.string = formattedPhoneNumber()
+                            #if os(iOS)
+                            HapticEngine.impact(.light)
+                            #endif
+                            withAnimation(SpektTheme.Motion.springSnappy) { copiedNumber = true }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+                                withAnimation(SpektTheme.Motion.springDefault) { copiedNumber = false }
+                            }
+                        } label: {
+                            Text(copiedNumber ? "Copied." : formattedPhoneNumber())
+                                .font(SpektTheme.Typography.overline)
+                                .tracking(2.2)
+                                .foregroundColor(copiedNumber
+                                    ? SpektTheme.Colors.accent
+                                    : SpektTheme.Colors.textTertiary.opacity(0.55))
+                                .contentTransition(.opacity)
+                                .animation(SpektTheme.Motion.springSnappy, value: copiedNumber)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.top, 10)
+                        .opacity(ctaAppeared ? 1 : 0)
                     }
                     .offset(y: heroParallax)
                     .padding(.bottom, 52)
@@ -363,10 +381,10 @@ struct SpektHomeView: View {
         HStack(spacing: 7) {
             StatusDot()
 
-            Text("SPEKT")
-                .font(.system(size: 11, weight: .semibold))
-                .tracking(3.8)
-                .foregroundColor(SpektTheme.Colors.textSecondary)
+            Text("SPEKT AI")
+                .font(SpektTheme.Typography.overline)
+                .tracking(4.2)
+                .foregroundColor(SpektTheme.Colors.textTertiary)
         }
         .opacity(headerAppeared ? 1 : 0)
         .offset(y: headerAppeared ? 0 : -10)
@@ -380,21 +398,14 @@ struct SpektHomeView: View {
 
     // MARK: Hero Text
     private var heroText: some View {
-        VStack(spacing: 10) {
-            Text("What do you")
-                .font(.system(size: 44, weight: .light, design: .default))
+        VStack(spacing: 8) {
+            Text("Instant intelligence.")
+                .font(Font.custom("Georgia", size: 38))
                 .foregroundColor(SpektTheme.Colors.textPrimary)
 
-            Text("need?")
-                .font(.system(size: 44, weight: .light, design: .default))
-                // Slight accent tint on the question word — barely perceptible
-                .foregroundStyle(
-                    LinearGradient(
-                        colors: [SpektTheme.Colors.textPrimary, SpektTheme.Colors.textPrimary.opacity(0.75)],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
-                )
+            Text("Zero waste.")
+                .font(Font.custom("Georgia", size: 38))
+                .foregroundColor(SpektTheme.Colors.accent)
         }
         .multilineTextAlignment(.center)
         .opacity(promptAppeared ? 1 : 0)
@@ -426,8 +437,8 @@ struct SpektHomeView: View {
                         .font(.system(size: 16, weight: .regular))
                         .transition(.scale.combined(with: .opacity))
                 }
-                Text(isCalling ? "Connecting…" : "Call your AI")
-                    .font(.system(size: 17, weight: .semibold))
+                Text(isCalling ? "Calling…" : "Call.")
+                    .font(Font.custom("Georgia", size: 17))
                     .animation(SpektTheme.Motion.springDefault, value: isCalling)
             }
             .foregroundColor(.white)
@@ -436,18 +447,7 @@ struct SpektHomeView: View {
             .background {
                 Capsule()
                     .fill(isCalling ? SpektTheme.Colors.accent.opacity(0.70) : SpektTheme.Colors.accent)
-                    .overlay {
-                        Capsule()
-                            .fill(
-                                LinearGradient(
-                                    colors: [Color.white.opacity(0.18), Color.clear],
-                                    startPoint: .top,
-                                    endPoint: .center
-                                )
-                            )
-                    }
-                    .shadow(color: SpektTheme.Colors.accent.opacity(0.50), radius: 22, x: 0, y: 8)
-                    .shadow(color: SpektTheme.Colors.accent.opacity(0.20), radius: 40, x: 0, y: 16)
+                    .shadow(color: SpektTheme.Colors.accent.opacity(0.55), radius: 24, x: 0, y: 8)
             }
         }
         .disabled(isCalling)
@@ -465,7 +465,7 @@ struct SpektHomeView: View {
             // Section header
             HStack(alignment: .firstTextBaseline) {
                 Text("RECENT OUTCOMES")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(SpektTheme.Typography.overline)
                     .tracking(1.8)
                     .foregroundColor(SpektTheme.Colors.textTertiary)
 
@@ -478,8 +478,9 @@ struct SpektHomeView: View {
                         #endif
                         onShowActivity?()
                     } label: {
-                        Text("See all")
-                            .font(.system(size: 12, weight: .medium))
+                        Text("SEE ALL")
+                            .font(SpektTheme.Typography.overline)
+                            .tracking(1.4)
                             .foregroundColor(SpektTheme.Colors.accent)
                     }
                     .buttonStyle(PressableButtonStyle(scale: 0.92))
@@ -493,10 +494,10 @@ struct SpektHomeView: View {
                 VStack(spacing: SpektTheme.Spacing.sm) {
                     Image(systemName: "phone.badge.waveform")
                         .font(.system(size: 28, weight: .ultraLight))
-                        .foregroundColor(SpektTheme.Colors.textTertiary.opacity(0.50))
-                    Text("Make your first call to see outcomes here.")
-                        .font(SpektTheme.Typography.bodySmall)
-                        .foregroundColor(SpektTheme.Colors.textTertiary.opacity(0.60))
+                        .foregroundColor(SpektTheme.Colors.accent.opacity(0.40))
+                    Text("Make a call. Outcomes appear here.")
+                        .font(Font.custom("Georgia", size: 13).italic())
+                        .foregroundColor(SpektTheme.Colors.textTertiary.opacity(0.65))
                         .multilineTextAlignment(.center)
                 }
                 .frame(maxWidth: .infinity)
