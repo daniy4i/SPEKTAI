@@ -40,9 +40,19 @@ enum SpektTheme {
 
     // MARK: Colors
     enum Colors {
-        /// True base: #08080D — deep near-black with a cool blue undertone
+        // ── Brand palette (SPEKT AI Brand Guidelines v2.0) ─────────────────
+        static let neonGreen  = Color(hex: "#39FF14") // PRIMARY — action, CTA, energy
+        static let signalRed  = Color(hex: "#E94560") // SECONDARY — urgency, warnings, LIVE
+        static let void_      = Color(hex: "#08080D") // BACKGROUND — the absence
+        static let skullBlue  = Color(hex: "#4A7CDB") // ACCENT — eyes of intelligence
+        static let bone       = Color(hex: "#E8E6E1") // TEXT — primary on dark
+        static let laserGold  = Color(hex: "#D4A843") // ACCENT — luxury, sparingly
+        static let ash        = Color(hex: "#3A3A42") // STRUCTURE — secondary surfaces
+        static let brandGray  = Color(hex: "#8B8B9E") // BODY — subtle text
+
+        // ── App surface ─────────────────────────────────────────────────────
         static let base        = Color(hex: "#08080D")
-        static let baseRaised  = Color(hex: "#0F0F1A")
+        static let baseRaised  = Color(hex: "#0F0F14")
 
         // Glass tints — white layered over dark at increasing opacity
         static let glassUltraThin = Color.white.opacity(0.04)
@@ -52,20 +62,20 @@ enum SpektTheme {
         static let glassBorder    = Color.white.opacity(0.10)
         static let glassHighlight = Color.white.opacity(0.20)
 
-        // Accent — soft indigo (Apple‑adjacent, not garish)
-        static let accent          = Color(hex: "#5E5CE6")
-        static let accentSecondary = Color(hex: "#BF5AF2")
-        static let accentGlow      = Color(hex: "#5E5CE6").opacity(0.22)
+        // ── Accent mappings ─────────────────────────────────────────────────
+        static let accent          = neonGreen                    // CTAs, primary actions
+        static let accentSecondary = skullBlue                    // secondary actions
+        static let accentGlow      = neonGreen.opacity(0.18)
 
-        // Text hierarchy
-        static let textPrimary   = Color.white
-        static let textSecondary = Color.white.opacity(0.55)
-        static let textTertiary  = Color.white.opacity(0.30)
+        // ── Text hierarchy ──────────────────────────────────────────────────
+        static let textPrimary   = bone                           // #E8E6E1
+        static let textSecondary = Color(hex: "#E8E6E1").opacity(0.55)
+        static let textTertiary  = Color(hex: "#8B8B9E")
 
-        // Semantic
-        static let positive    = Color(hex: "#34C759")
-        static let destructive = Color(hex: "#FF375F")
-        static let warning     = Color(hex: "#FF9F0A")
+        // ── Semantic ────────────────────────────────────────────────────────
+        static let positive    = neonGreen                        // success states
+        static let destructive = signalRed                        // #E94560
+        static let warning     = laserGold                        // #D4A843
     }
 
     // MARK: Spacing
@@ -89,18 +99,25 @@ enum SpektTheme {
     }
 
     // MARK: Typography
+    // Georgia (serif) for headlines/body — Courier New for labels/data
+    // Per SPEKT AI Brand Guidelines v2.0: never use sans-serif
     enum Typography {
-        static let displayLarge  = Font.system(size: 34, weight: .bold,     design: .default)
-        static let displayMedium = Font.system(size: 28, weight: .semibold, design: .default)
-        static let titleLarge    = Font.system(size: 22, weight: .semibold, design: .default)
-        static let titleMedium   = Font.system(size: 18, weight: .semibold, design: .default)
-        static let titleSmall    = Font.system(size: 16, weight: .semibold, design: .default)
-        static let bodyLarge     = Font.system(size: 17, weight: .regular,  design: .default)
-        static let bodyMedium    = Font.system(size: 15, weight: .regular,  design: .default)
-        static let bodySmall     = Font.system(size: 13, weight: .regular,  design: .default)
-        static let caption       = Font.system(size: 11, weight: .medium,   design: .default)
-        static let overline      = Font.system(size: 10, weight: .semibold, design: .default)
-        static let mono          = Font.system(size: 13, weight: .regular,  design: .monospaced)
+        // Headlines — Georgia, the weight of permanence
+        static let displayLarge  = Font.custom("Georgia",      size: 34)
+        static let displayMedium = Font.custom("Georgia",      size: 28)
+        static let titleLarge    = Font.custom("Georgia",      size: 22)
+        static let titleMedium   = Font.custom("Georgia",      size: 18)
+        static let titleSmall    = Font.custom("Georgia",      size: 16)
+
+        // Body — Georgia, sentence case
+        static let bodyLarge     = Font.custom("Georgia",      size: 17)
+        static let bodyMedium    = Font.custom("Georgia",      size: 15)
+        static let bodySmall     = Font.custom("Georgia",      size: 13)
+
+        // Labels & data — Courier New, the precision of code
+        static let caption       = Font.custom("Courier New",  size: 11)
+        static let overline      = Font.custom("Courier New",  size: 10)
+        static let mono          = Font.custom("Courier New",  size: 13)
     }
 
     // MARK: Motion
